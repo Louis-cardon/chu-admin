@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import ChallengeComponent from '@/components/challengeDetails';
 import Navigation from '@/components/navigation';
@@ -16,7 +16,7 @@ const Home: FC = () => {
     <div className="flex h-screen bg-white text-black p-4">
       <Navigation onNavigate={handlePageChange} />
       <div className="pl-4 flex-1">
-        <ChallengeComponent/>
+        <ChallengeComponent />
       </div>
     </div>
   );

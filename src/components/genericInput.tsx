@@ -8,9 +8,9 @@ const GenericInput: FC<GenericInputProps> = ({ label, ...rest }) => {
   return (
     <div className="flex flex-col">
       <label className="mb-2 text-gray-700">{label}</label>
-      <input 
+      <input
         {...rest}
-        className="px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 text-black" 
+        className="px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 text-black"
       />
     </div>
   );
