@@ -1,6 +1,6 @@
 'use client';
 
-import ChallengeComponent from '@/components/challengeDetails';
+import ChallengeComponent from '@/components/challengeComponent';
 import Navigation from '@/components/navigation';
 import React, { FC, useState } from 'react';
 
