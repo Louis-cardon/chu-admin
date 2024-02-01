@@ -63,8 +63,6 @@ const StatisticsComponent = () => {
           <span>Exporter une liste*</span>
           <FontAwesomeIcon icon={faUpload} className="ml-2" />
         </button>
-        {/* <button className="flex items-center px-4 py-2 border rounded-md text-primaryBlue">
-        </button> */}
       </div>
       <p className="text-xs text-gray-500 mt-2">
         * Format accepté : .csv uniquement
