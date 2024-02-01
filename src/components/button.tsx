@@ -6,7 +6,7 @@ interface ButtonProps {
 
 const Button: FC<ButtonProps> = ({ text }) => {
   return (
-    <button className="w-auto py-2 text-white bg-primaryBlue rounded-xl px-2">
+    <button className="w-auto py-2 text-white bg-primaryBlue rounded-3xl px-2">
       {text}
     </button>
   );
