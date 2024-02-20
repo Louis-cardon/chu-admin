@@ -3,7 +3,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 
-const ChallengeComponent = () => {
+interface ChallengeComponentProps {
+  challengeId: number;
+}
+
+const ChallengeComponent = ({ challengeId }: ChallengeComponentProps) => {
   const [eventStartDate, setEventStartDate] = useState(new Date());
   const [eventEndDate, setEventEndDate] = useState(new Date());
   const [registrationStartDate, setRegistrationStartDate] = useState(

@@ -2,7 +2,13 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
-const AnnouncementsComponent = () => {
+interface AnnouncementsComponentProps {
+  challengeId: number;
+}
+
+const AnnouncementsComponent = ({
+  challengeId,
+}: AnnouncementsComponentProps) => {
   const [announcements, setAnnouncements] = useState([
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
     'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
@@ -29,7 +35,7 @@ const AnnouncementsComponent = () => {
   };
 
   return (
-    <div className="flex flex-col h-full p-6 bg-white rounded-3xl shadow-sm shadow-gray-300 border border-gray-100">
+    <div className="flex flex-col h-full p-6 bg-white rounded-3xl shadow-sm shadow-gray-300 border border-gray-100 o">
       <h1 className="text-3xl font-semibold mb-4 text-center">MES ANNONCES</h1>
       <div className="flex-grow overflow-auto mb-4 p-4 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl">
         {announcements.map((announcement, index) => (

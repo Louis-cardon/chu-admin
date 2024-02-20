@@ -1,9 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faAdd,
-  faRightFromBracket,
-  faTrash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faAdd, faTrash } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, FC } from 'react';
 import Image from 'next/image';
 import logoChu from '../assets/logo-CHU.png';
@@ -14,10 +10,11 @@ type Challenge = {
 };
 
 interface NavigationProps {
-  onNavigate: (page: string) => void;
+  onNavigate: (challengeId: number) => void;
+  onSubMenuClick: (subMenu: string) => void;
 }
 
-const Navigation: FC<NavigationProps> = ({ onNavigate }) => {
+const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
   const [activeItem, setActiveItem] = useState<number>(0);
 
   const [challenges, setChallenges] = useState<Challenge[]>([
@@ -26,9 +23,14 @@ const Navigation: FC<NavigationProps> = ({ onNavigate }) => {
     { id: 3, title: 'Challenge 2026' },
   ]);
 
-  const handleItemClick = (itemId: number, pageTitle: string) => {
-    setActiveItem(itemId);
-    onNavigate(pageTitle);
+  const handleItemClick = (challengeId: number) => {
+    onNavigate(challengeId);
+    setActiveItem(challengeId);
+    onSubMenuClick('announcements');
+  };
+
+  const handleSubMenuClick = (subMenu: string) => {
+    onSubMenuClick(subMenu);
   };
 
   const buttonStyle = 'p-1 block border-l';
@@ -41,7 +43,7 @@ const Navigation: FC<NavigationProps> = ({ onNavigate }) => {
           {activeItem === item.id ? (
             <div>
               <button
-                onClick={() => handleItemClick(item.id, item.title)}
+                onClick={() => handleItemClick(item.id)}
                 className={`p-2 rounded-3xl text-primaryBlue shadow-md shadow-gray-300  border border-gray-100`}
               >
                 {item.title}
@@ -52,19 +54,31 @@ const Navigation: FC<NavigationProps> = ({ onNavigate }) => {
               </button>
             </div>
           ) : (
-            <button
-              onClick={() => handleItemClick(item.id, item.title)}
-              className={`p-2`}
-            >
+            <button onClick={() => handleItemClick(item.id)} className={`p-2`}>
               {item.title}
             </button>
           )}
 
           {activeItem === item.id && (
             <div className="pl-4 text-xs">
-              <button className={buttonStyle}>Informations</button>
-              <button className={buttonStyle}>Annonces</button>
-              <button className={buttonStyle}>Statistique</button>
+              <button
+                className={buttonStyle}
+                onClick={() => handleSubMenuClick('announcements')}
+              >
+                Annonces
+              </button>
+              <button
+                className={buttonStyle}
+                onClick={() => handleSubMenuClick('statistics')}
+              >
+                Statistique
+              </button>
+              <button
+                className={buttonStyle}
+                onClick={() => handleSubMenuClick('challenge')}
+              >
+                Informations
+              </button>
             </div>
           )}
         </div>
@@ -73,10 +87,6 @@ const Navigation: FC<NavigationProps> = ({ onNavigate }) => {
       <button className="flex items-center justify-center p-2 rounded-3xl border border-gray-100 text-primaryBlue shadow-md shadow-gray-300">
         <FontAwesomeIcon className="mr-1" icon={faAdd} />
         <span>Créer un nouveau challenge</span>
-      </button>
-      <button className="mt-auto flex items-center justify-center p-2 rounded-3xl border border-gray-100 text-primaryBlue shadow-md shadow-gray-300">
-        <FontAwesomeIcon className="mr-1" icon={faRightFromBracket} />
-        <span>Déconnexion</span>
       </button>
     </div>
   );

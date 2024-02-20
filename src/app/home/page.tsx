@@ -4,20 +4,37 @@ import AnnouncementsComponent from '@/components/announcementsComponent';
 import ChallengeComponent from '@/components/challengeComponent';
 import Navigation from '@/components/navigation';
 import StatisticsComponent from '@/components/statisticsComponent';
-import React, { FC, useState } from 'react';
+import { FC } from 'react';
+import { useState } from 'react';
 
 const Home: FC = () => {
-  const [activePage, setActivePage] = useState<string>('');
+  const [activeChallengeId, setActiveChallengeId] = useState<number>(0);
+  const [activeSubMenu, setActiveSubMenu] = useState<string>('');
 
-  const handlePageChange = (page: string) => {
-    setActivePage(page);
+  const handleChallengeClick = (challengeId: number) => {
+    setActiveChallengeId(challengeId);
+  };
+
+  const handleSubMenuClick = (subMenu: string) => {
+    setActiveSubMenu(subMenu);
   };
 
   return (
     <div className="flex h-screen bg-white text-black p-4">
-      <Navigation onNavigate={handlePageChange} />
+      <Navigation
+        onNavigate={handleChallengeClick}
+        onSubMenuClick={handleSubMenuClick}
+      />
       <div className="pl-4 flex-1">
-        <AnnouncementsComponent />
+        {activeSubMenu === 'announcements' && (
+          <AnnouncementsComponent challengeId={activeChallengeId} />
+        )}
+        {activeSubMenu === 'statistics' && (
+          <StatisticsComponent challengeId={activeChallengeId} />
+        )}
+        {activeSubMenu === 'challenge' && (
+          <ChallengeComponent challengeId={activeChallengeId} />
+        )}
       </div>
     </div>
   );

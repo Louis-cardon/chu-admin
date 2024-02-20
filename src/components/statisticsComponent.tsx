@@ -7,7 +7,11 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import './../css/scrollbar-styled.css';
 
-const StatisticsComponent = () => {
+interface StatisticsComponentProps {
+  challengeId: number;
+}
+
+const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
   const ids = [
     'id00001',
     'id00002',
