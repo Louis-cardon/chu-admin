@@ -1,11 +1,27 @@
+'use client';
+
 import Image from 'next/image';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import logoChu from '../../assets/LOGO-APP-CHU.png';
 import sideImage from '../../assets/charle-nicolle.png';
 import Button from '@/components/button';
 import GenericInput from '@/components/genericInput';
+import { useRouter } from 'next/navigation';
 
 const Login: FC = () => {
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    try {
+      router.push('/home');
+      console.log('click');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center h-screen bg-white">
       <div className="flex flex-col md:flex-row border rounded-3xl shadow-lg overflow-hidden w-full max-w-4xl">
@@ -21,7 +37,7 @@ const Login: FC = () => {
             type="password"
             placeholder="Entrez votre mot de passe"
           />
-          <Button text="Se connecter" />
+          <Button text="Se connecter" onClick={handleSubmit} />
         </div>
         <div className="w-full md:w-1/2 relative">
           <Image
