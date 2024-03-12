@@ -2,12 +2,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faTrash } from '@fortawesome/free-solid-svg-icons';
 import React, { useState, FC } from 'react';
 import Image from 'next/image';
-import logoChu from '../assets/logo-CHU.png';
-
-type Challenge = {
-  id: number;
-  title: string;
-};
+import logoChu from '@/../public/assets/logo-CHU.png';
+import { Challenge } from '@/types/challenge';
+import { fetchAllChallenges } from '@/utils/supabase/fetchData';
 
 interface NavigationProps {
   onNavigate: (challengeId: number) => void;
@@ -17,12 +14,7 @@ interface NavigationProps {
 const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
   const [activeItem, setActiveItem] = useState<number>(0);
   const [activeSubMenu, setActiveSubMenu] = useState<string>('');
-
-  const [challenges, setChallenges] = useState<Challenge[]>([
-    { id: 1, title: 'Challenge 2024' },
-    { id: 2, title: 'Challenge 2025' },
-    { id: 3, title: 'Challenge 2026' },
-  ]);
+  const [challenges, setChallenges] = useState<Challenge[] | null>(null);
 
   const handleItemClick = (challengeId: number) => {
     onNavigate(challengeId);
@@ -42,10 +34,19 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
   const buttonStyle = 'p-1 block border-l';
   const underlineStyle = 'underline';
 
+  React.useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAllChallenges();
+      setChallenges(data);
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <div className="p-2 flex flex-col border h-full text-sm rounded-3xl shadow-sm shadow-gray-300 border-gray-100">
       <Image src={logoChu} alt="Logo" width={50} height={50} className="m-3" />
-      {challenges.map((item: Challenge) => (
+      {challenges?.map((item: Challenge) => (
         <div key={item.id}>
           {activeItem === item.id ? (
             <div>
@@ -53,7 +54,7 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
                 onClick={() => handleItemClick(item.id)}
                 className={`p-2 rounded-3xl text-primaryBlue shadow-md shadow-gray-300  border border-gray-100`}
               >
-                {item.title}
+                {item.name}
                 <FontAwesomeIcon
                   className="text-gray-200 ml-4 text-xs"
                   icon={faTrash}
@@ -62,7 +63,7 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
             </div>
           ) : (
             <button onClick={() => handleItemClick(item.id)} className={`p-2`}>
-              {item.title}
+              {item.name}
             </button>
           )}
 

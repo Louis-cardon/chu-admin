@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faDownload,
@@ -6,6 +6,8 @@ import {
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import './../css/scrollbar-styled.css';
+import { fetchAllUser } from '@/utils/supabase/fetchData';
+import { User } from '@/types/user';
 
 interface StatisticsComponentProps {
   challengeId: number;
@@ -42,16 +44,26 @@ const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
     'id00009',
   ];
 
+  const [user, setUsers] = useState<User[] | null>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAllUser(challengeId);
+      setUsers(data);
+    };
+    fetchData();
+  }, [challengeId]);
+
   return (
     <div className="flex flex-col h-full p-6 bg-white rounded-3xl shadow-sm shadow-gray-300 border border-gray-100">
       <h2 className="text-2xl font-semibold mb-4 text-center">STATISTIQUES</h2>
       <div className="p-6 flex-grow overflow-auto mb-4 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl scrollbar-styled">
-        {ids.map((id) => (
+        {user?.map((user) => (
           <div
-            key={id}
+            key={user.id}
             className="flex items-center justify-between p-2 m-2 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl"
           >
-            <span className="flex-grow">{id}</span>
+            <span className="flex-grow">{user.chu_id}</span>
             <button>
               <FontAwesomeIcon className="text-gray-200" icon={faTrash} />
             </button>

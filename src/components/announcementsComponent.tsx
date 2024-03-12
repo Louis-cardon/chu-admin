@@ -1,6 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+  deleteNotification,
+  fetchAllNotificationChallenges,
+  insertNotification,
+} from '@/utils/supabase/fetchData';
+import { Notification } from '@/types/notification';
+import { createClient } from '@/utils/supabase/server';
 
 interface AnnouncementsComponentProps {
   challengeId: number;
@@ -9,28 +16,47 @@ interface AnnouncementsComponentProps {
 const AnnouncementsComponent = ({
   challengeId,
 }: AnnouncementsComponentProps) => {
-  const [announcements, setAnnouncements] = useState([
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor...',
-  ]);
+  const [announcements, setAnnouncements] = useState<Notification[] | null>(
+    null
+  );
   const [newAnnouncement, setNewAnnouncement] = useState('');
 
-  const handleNewAnnouncementChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setNewAnnouncement(e.target.value);
+  const fetchData = async () => {
+    const data = await fetchAllNotificationChallenges(challengeId);
+    setAnnouncements(data);
   };
 
-  const submitNewAnnouncement = () => {
-    if (newAnnouncement.trim() !== '') {
-      setAnnouncements([...announcements, newAnnouncement]);
+  useEffect(() => {
+    fetchData();
+    setNewAnnouncement('');
+  }, [challengeId]);
+
+  const submitNewAnnouncement = async () => {
+    if (newAnnouncement.trim() === '') return;
+
+    try {
+      await insertNotification(newAnnouncement, challengeId);
+      fetchData();
       setNewAnnouncement('');
+    } catch (err) {
+      console.error('Error inserting notification:', err);
+    }
+  };
+
+  const deleteAnnouncement = async (announcementId: number) => {
+    if (!announcements) return;
+
+    const updatedAnnouncements = announcements.filter(
+      (announcement) => announcement.id !== announcementId
+    );
+
+    setAnnouncements(updatedAnnouncements);
+
+    try {
+      await deleteNotification(announcementId);
+    } catch (err) {
+      console.error('Error deleting notification:', err);
+      //setAnnouncements(prevAnnouncements => [...prevAnnouncements, announcement]); // if deletion fails, add the announcement back
     }
   };
 
@@ -38,13 +64,13 @@ const AnnouncementsComponent = ({
     <div className="flex flex-col h-full p-6 bg-white rounded-3xl shadow-sm shadow-gray-300 border border-gray-100 o">
       <h1 className="text-3xl font-semibold mb-4 text-center">MES ANNONCES</h1>
       <div className="flex-grow overflow-auto mb-4 p-4 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl">
-        {announcements.map((announcement, index) => (
+        {announcements?.map((announcement, index) => (
           <div
             key={index}
             className="flex items-center justify-between p-2 my-2 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl"
           >
-            <span className="flex-grow">{announcement}</span>
-            <button>
+            <span className="flex-grow">{announcement.content}</span>
+            <button onClick={() => deleteAnnouncement(announcement.id)}>
               <FontAwesomeIcon icon={faTrashAlt} className="text-gray-200" />
             </button>
           </div>

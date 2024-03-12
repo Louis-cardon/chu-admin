@@ -1,55 +1,80 @@
 'use client';
 
 import Image from 'next/image';
-import React, { FC, useEffect } from 'react';
-import logoChu from '../../assets/LOGO-APP-CHU.png';
-import sideImage from '../../assets/charle-nicolle.png';
-import Button from '@/components/button';
+import React, { FC, useState } from 'react';
+import { login } from './action';
 import GenericInput from '@/components/genericInput';
 import { useRouter } from 'next/navigation';
 
-const Login: FC = () => {
+const LoginPage: FC = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault(); // Empêche le comportement par défaut du formulaire
+
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
 
     try {
-      router.push('/home');
-      console.log('click');
-    } catch (err) {
-      console.error(err);
+      await login(formData);
+      router.push('/home'); // Rediriger l'utilisateur après une connexion réussie
+    } catch (error) {
+      console.error(error);
+      alert('Login failed. Please check your email and password.');
     }
   };
 
   return (
-    <div className="flex items-center justify-center h-screen bg-white">
-      <div className="flex flex-col md:flex-row border rounded-3xl shadow-lg overflow-hidden w-full max-w-4xl">
-        <div className="p-6 space-y-4 flex flex-col items-center w-full md:w-1/2">
-          <Image src={logoChu} alt="Logo" width={100} height={100} />
-          <GenericInput
-            label="Nom d'utilisateur"
-            type="text"
-            placeholder="Entrez votre nom d'utilisateur"
-          />
-          <GenericInput
-            label="Mot de passe"
-            type="password"
-            placeholder="Entrez votre mot de passe"
-          />
-          <Button text="Se connecter" onClick={handleSubmit} />
-        </div>
-        <div className="w-full md:w-1/2 relative">
-          <Image
-            src={sideImage}
-            alt="Side Image"
-            layout="fill"
-            objectFit="cover"
-          />
+    <form onSubmit={handleSubmit}>
+      {' '}
+      {/* Ajout de l'écouteur d'événement onSubmit ici */}
+      <div className="flex items-center justify-center h-screen bg-white">
+        <div className="flex flex-col md:flex-row border rounded-3xl shadow-lg overflow-hidden w-full max-w-4xl">
+          <div className="p-6 space-y-4 flex flex-col items-center w-full md:w-1/2">
+            <Image
+              src="/assets/LOGO-APP-CHU.png"
+              alt="Logo"
+              width={100}
+              height={100}
+            />
+            <GenericInput
+              label="Email"
+              type="email"
+              placeholder="Entrez votre email"
+              name="email" // Ajoutez cet attribut
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <GenericInput
+              label="Mot de passe"
+              type="password"
+              placeholder="Entrez votre mot de passe"
+              name="password" // Ajoutez cet attribut
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <button
+              className="w-auto py-2 text-white bg-primaryBlue rounded-3xl px-2 mt-4"
+              type="submit"
+            >
+              Se connecter
+            </button>
+          </div>
+          <div className="w-full md:w-1/2 relative">
+            <Image
+              src="/assets/charle-nicolle.png"
+              alt="Side Image"
+              layout="fill"
+              objectFit="cover"
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </form>
   );
 };
 
-export default Login;
+export default LoginPage;
