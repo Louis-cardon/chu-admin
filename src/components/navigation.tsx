@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAdd, faTrash } from '@fortawesome/free-solid-svg-icons';
-import React, { useState, FC } from 'react';
+import React, { useState, FC, useEffect } from 'react';
 import Image from 'next/image';
 import logoChu from '@/../public/assets/logo-CHU.png';
 import { Challenge } from '@/types/challenge';
@@ -28,13 +28,15 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
   };
 
   const handleNewChallengeClick = () => {
-    onSubMenuClick('announcements');
+    onNavigate(0);
+    setActiveItem(0);
+    onSubMenuClick('challenge');
   };
 
   const buttonStyle = 'p-1 block border-l';
   const underlineStyle = 'underline';
 
-  React.useEffect(() => {
+  useEffect(() => {
     const fetchData = async () => {
       const data = await fetchAllChallenges();
       setChallenges(data);

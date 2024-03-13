@@ -114,3 +114,49 @@ export async function updateUserIsActive(
   }
   console.log('User is_active updated successfully');
 }
+
+export async function fetchChallenge(id: number): Promise<Challenge | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from('challenge')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (error) {
+    console.error('Error fetching challenge:', error);
+    return null;
+  }
+
+  return data as Challenge;
+}
+
+export async function updateChallenge(
+  id: number,
+  updatedChallenge: Partial<Challenge>
+) {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from('challenge')
+    .update(updatedChallenge)
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error updating challenge:', error);
+    throw error;
+  }
+
+  console.log('Challenge updated successfully');
+}
+
+export async function insertChallenge(challengeData: Omit<Challenge, 'id'>) {
+  const supabase = createClient();
+  const { error } = await supabase.from('challenge').insert([challengeData]);
+
+  if (error) {
+    console.error('Error inserting challenge:', error);
+    return null;
+  }
+
+  console.log('Challenge inserted successfully:', challengeData);
+}
