@@ -6,7 +6,7 @@ import {
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import './../css/scrollbar-styled.css';
-import { fetchAllUser } from '@/utils/supabase/fetchData';
+import { fetchAllUser, updateUserIsActive } from '@/utils/supabase/fetchData';
 import { User } from '@/types/user';
 
 interface StatisticsComponentProps {
@@ -14,37 +14,7 @@ interface StatisticsComponentProps {
 }
 
 const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
-  const ids = [
-    'id00001',
-    'id00002',
-    'id00003',
-    'id00004',
-    'id00005',
-    'id00006',
-    'id00007',
-    'id00008',
-    'id00009',
-    'id00001',
-    'id00002',
-    'id00003',
-    'id00004',
-    'id00005',
-    'id00006',
-    'id00007',
-    'id00008',
-    'id00009',
-    'id00001',
-    'id00002',
-    'id00003',
-    'id00004',
-    'id00005',
-    'id00006',
-    'id00007',
-    'id00008',
-    'id00009',
-  ];
-
-  const [user, setUsers] = useState<User[] | null>(null);
+  const [users, setUsers] = useState<User[] | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,17 +24,32 @@ const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
     fetchData();
   }, [challengeId]);
 
+  const handleDeleteUser = async (userId: number) => {
+    await updateUserIsActive(userId, false);
+    if (users) {
+      setUsers((prevUsers) => {
+        if (prevUsers) {
+          return prevUsers.filter((user) => user.id !== userId);
+        } else {
+          return prevUsers;
+        }
+      });
+    }
+  };
+
+  const activeUsers = users?.filter((user) => user !== null) || [];
+
   return (
     <div className="flex flex-col h-full p-6 bg-white rounded-3xl shadow-sm shadow-gray-300 border border-gray-100">
       <h2 className="text-2xl font-semibold mb-4 text-center">STATISTIQUES</h2>
       <div className="p-6 flex-grow overflow-auto mb-4 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl scrollbar-styled">
-        {user?.map((user) => (
+        {activeUsers?.map((user) => (
           <div
             key={user.id}
             className="flex items-center justify-between p-2 m-2 shadow-sm shadow-gray-300 border border-gray-100 rounded-3xl"
           >
             <span className="flex-grow">{user.chu_id}</span>
-            <button>
+            <button onClick={() => handleDeleteUser(user.id)}>
               <FontAwesomeIcon className="text-gray-200" icon={faTrash} />
             </button>
           </div>

@@ -87,23 +87,30 @@ export async function fetchAllUser(
   const { data, error } = await supabase
     .from('user_challenge')
     .select('user(*)')
-    .eq('challenge_id', challengeId);
+    .eq('challenge_id', challengeId)
+    .eq('user.is_active', true);
 
   if (error) {
     console.error('Erreur lors de la récupération des données', error);
     return null;
   }
   console.log('data', data);
-  return data.map((item) => item.user).flat();
+  return data.map((item) => item.user).flat() || [];
 }
 
-export async function deleteUser(userId: number): Promise<void> {
+export async function updateUserIsActive(
+  userId: number,
+  isActive: boolean
+): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.from('user').delete().eq('id', userId);
+  const { error } = await supabase
+    .from('user')
+    .update({ is_active: isActive })
+    .eq('id', userId);
 
   if (error) {
-    console.error('Error deleting user:', error);
+    console.error('Error updating user is_active:', error);
     throw error;
   }
-  console.log('user deleted successfully');
+  console.log('User is_active updated successfully');
 }

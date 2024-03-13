@@ -55,10 +55,6 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
                 className={`p-2 rounded-3xl text-primaryBlue shadow-md shadow-gray-300  border border-gray-100`}
               >
                 {item.name}
-                <FontAwesomeIcon
-                  className="text-gray-200 ml-4 text-xs"
-                  icon={faTrash}
-                />
               </button>
             </div>
           ) : (
