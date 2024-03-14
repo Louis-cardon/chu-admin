@@ -105,7 +105,9 @@ const ChallengeComponent: React.FC<ChallengeComponentProps> = ({
   return (
     <div className="p-2 flex flex-col border text-sm rounded-3xl shadow-sm shadow-gray-300 border-gray-100">
       <div className="flex flex-col items-center">
-        <h2 className="text-3xl font-semibold mb-3">DATES DE L'ÉVÉNEMENT</h2>
+        <h2 className="text-3xl font-semibold mb-3">
+          DATES DE L&apos;ÉVÉNEMENT
+        </h2>
         <div className="flex justify-between p-2 m-2 border text-sm rounded-3xl shadow-sm shadow-gray-300 border-gray-100">
           <div>
             <p>Date de début :</p>
@@ -179,12 +181,12 @@ const ChallengeComponent: React.FC<ChallengeComponentProps> = ({
           >
             {challengeId === 0 ? (
               <>
-                <span>Ajouter l'événement</span>
+                <span>Ajouter l&apos;événement</span>
                 <FontAwesomeIcon className="ml-2" icon={faAdd} />
               </>
             ) : (
               <>
-                <span>Modifier l'événement</span>
+                <span>Modifier l&apos;événement</span>
                 <FontAwesomeIcon className="ml-2" icon={faPencilAlt} />
               </>
             )}
