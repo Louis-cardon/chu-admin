@@ -1,4 +1,5 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { UserResponse } from '@supabase/supabase-js';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function updateSession(request: NextRequest) {
@@ -54,7 +55,12 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  await supabase.auth.getUser();
+  const { data: userResponse, error }: UserResponse =
+    await supabase.auth.getUser();
+
+  if (!userResponse.user) {
+    response = NextResponse.rewrite(new URL('/login', request.url));
+  }
 
   return response;
 }
