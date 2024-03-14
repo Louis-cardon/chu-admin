@@ -29,7 +29,7 @@ const LoginPage: FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex items-center justify-center h-screen bg-white">
+      <div className="flex items-center justify-center h-screen bg-white flex-col">
         <div className="flex flex-col md:flex-row border rounded-3xl shadow-lg overflow-hidden w-full max-w-4xl">
           <div className="p-6 space-y-4 flex flex-col items-center w-full md:w-1/2">
             <Image
@@ -69,6 +69,20 @@ const LoginPage: FC = () => {
               objectFit="cover"
             />
           </div>
+        </div>
+        <div className="flex justify-center items-center space-x-4 pb-4">
+          <Image
+            src="/assets/Logo_cesi_2022.png"
+            alt="Logo du CESI"
+            width={150}
+            height={100}
+          />
+          <Image
+            src="/assets/logo-CHU.png"
+            alt="Logo du CHU"
+            width={150}
+            height={100}
+          />
         </div>
       </div>
     </form>
