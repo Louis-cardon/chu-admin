@@ -4,13 +4,12 @@ import AnnouncementsComponent from '@/components/announcementsComponent';
 import ChallengeComponent from '@/components/challengeComponent';
 import Navigation from '@/components/navigation';
 import StatisticsComponent from '@/components/statisticsComponent';
-import { FC, useEffect } from 'react';
+import { FC } from 'react';
 import { useState } from 'react';
 
 const Home: FC = () => {
   const [activeChallengeId, setActiveChallengeId] = useState<number>(0);
   const [activeSubMenu, setActiveSubMenu] = useState<string>('');
-
 
   const handleChallengeClick = (challengeId: number) => {
     setActiveChallengeId(challengeId);

@@ -12,7 +12,7 @@ const LoginPage: FC = () => {
   const router = useRouter();
 
   const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault(); // Empêche le comportement par défaut du formulaire
+    event.preventDefault();
 
     const formData = new FormData();
     formData.append('email', email);
@@ -20,7 +20,7 @@ const LoginPage: FC = () => {
 
     try {
       await login(formData);
-      router.push('/home'); // Rediriger l'utilisateur après une connexion réussie
+      router.push('/home');
     } catch (error) {
       console.error(error);
       alert('Login failed. Please check your email and password.');
@@ -29,8 +29,6 @@ const LoginPage: FC = () => {
 
   return (
     <form onSubmit={handleSubmit}>
-      {' '}
-      {/* Ajout de l'écouteur d'événement onSubmit ici */}
       <div className="flex items-center justify-center h-screen bg-white">
         <div className="flex flex-col md:flex-row border rounded-3xl shadow-lg overflow-hidden w-full max-w-4xl">
           <div className="p-6 space-y-4 flex flex-col items-center w-full md:w-1/2">
@@ -44,7 +42,7 @@ const LoginPage: FC = () => {
               label="Email"
               type="email"
               placeholder="Entrez votre email"
-              name="email" // Ajoutez cet attribut
+              name="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
@@ -52,7 +50,7 @@ const LoginPage: FC = () => {
               label="Mot de passe"
               type="password"
               placeholder="Entrez votre mot de passe"
-              name="password" // Ajoutez cet attribut
+              name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />

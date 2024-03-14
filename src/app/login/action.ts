@@ -29,13 +29,10 @@ export async function login(formData: FormData) {
       password: formData.get('password') as string,
     };
 
-    console.log('test 1');
     const { error } = await supabase.auth.signInWithPassword(data);
-    console.log('test 2', error);
     revalidatePath('/', 'layout');
     redirect('/');
   } catch (error) {
-    console.log('test 3');
     if (error instanceof Error) {
       redirect('/error?messagtest=' + encodeURIComponent(error.message));
     } else {

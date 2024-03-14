@@ -7,7 +7,6 @@ import {
   insertNotification,
 } from '@/utils/supabase/fetchData';
 import { Notification } from '@/types/notification';
-import { createClient } from '@/utils/supabase/server';
 
 interface AnnouncementsComponentProps {
   challengeId: number;
@@ -56,7 +55,6 @@ const AnnouncementsComponent = ({
       await deleteNotification(announcementId);
     } catch (err) {
       console.error('Error deleting notification:', err);
-      //setAnnouncements(prevAnnouncements => [...prevAnnouncements, announcement]); // if deletion fails, add the announcement back
     }
   };
 
