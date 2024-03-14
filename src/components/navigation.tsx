@@ -4,7 +4,10 @@ import React, { useState, FC, useEffect } from 'react';
 import Image from 'next/image';
 import logoChu from '@/../public/assets/logo-CHU.png';
 import { Challenge } from '@/types/challenge';
-import { fetchAllChallenges } from '@/utils/supabase/fetchData';
+import { fetchAllChallenges, signOut } from '@/utils/supabase/fetchData';
+import { createClient } from '@/utils/supabase/client';
+import { revalidatePath } from 'next/cache';
+import { redirect, useRouter } from 'next/navigation';
 
 interface NavigationProps {
   onNavigate: (challengeId: number) => void;
@@ -15,6 +18,7 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
   const [activeItem, setActiveItem] = useState<number>(0);
   const [activeSubMenu, setActiveSubMenu] = useState<string>('');
   const [challenges, setChallenges] = useState<Challenge[] | null>(null);
+  const supabase = createClient();
 
   const handleItemClick = (challengeId: number) => {
     onNavigate(challengeId);
@@ -44,6 +48,12 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
 
     fetchData();
   }, []);
+  const router = useRouter();
+
+  async function signOutRoute() {
+    signOut();
+    router.push('/login');
+  }
 
   return (
     <div className="p-2 flex flex-col border h-full text-sm rounded-3xl shadow-sm shadow-gray-300 border-gray-100">
@@ -96,6 +106,13 @@ const Navigation: FC<NavigationProps> = ({ onNavigate, onSubMenuClick }) => {
       >
         <FontAwesomeIcon className="mr-1" icon={faAdd} />
         <span>Créer un nouveau challenge</span>
+      </button>
+      <button
+        className="flex items-center justify-center p-2 rounded-3xl border border-gray-100 text-primaryBlue shadow-md shadow-gray-300"
+        onClick={signOutRoute}
+      >
+        <FontAwesomeIcon className="mr-1" icon={faTrash} />
+        <span>Se déconnecter</span>
       </button>
     </div>
   );

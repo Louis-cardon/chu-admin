@@ -2,6 +2,8 @@ import { Challenge } from '@/types/challenge';
 import { createClient } from './client';
 import { Notification } from '@/types/notification';
 import { User } from '@/types/user';
+import { redirect, useRouter } from 'next/navigation';
+import { revalidatePath } from 'next/cache';
 
 interface SupabaseData {
   data: Challenge[] | null;
@@ -159,4 +161,9 @@ export async function insertChallenge(challengeData: Omit<Challenge, 'id'>) {
   }
 
   console.log('Challenge inserted successfully:', challengeData);
+}
+
+export async function signOut() {
+  const supabase = createClient();
+  const { error } = await supabase.auth.signOut();
 }

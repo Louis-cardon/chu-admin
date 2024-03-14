@@ -20,7 +20,7 @@ const LoginPage: FC = () => {
 
     try {
       await login(formData);
-      router.push('/home');
+      //router.push('/home');
     } catch (error) {
       console.error(error);
       alert('Login failed. Please check your email and password.');
