@@ -1,7 +1,7 @@
 import { Challenge } from '@/types/challenge';
 import { createClient } from './client';
 import { Notification } from '@/types/notification';
-import { User } from '@/types/user';
+import { User, UserWithSteps } from '@/types/user';
 import { redirect, useRouter } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 
@@ -18,7 +18,6 @@ export async function fetchAllChallenges(): Promise<Challenge[] | null> {
     console.error('Erreur lors de la récupération des données', error);
     return null;
   }
-  console.log('data', data);
   return data;
 }
 
@@ -35,7 +34,6 @@ export async function fetchAllNotificationChallenges(
     console.error('Erreur lors de la récupération des données', error);
     return null;
   }
-  console.log('data', data);
   console.log('data', idChallenge);
   return data;
 }
@@ -96,7 +94,6 @@ export async function fetchAllUser(
     console.error('Erreur lors de la récupération des données', error);
     return null;
   }
-  console.log('data', data);
   return data.map((item) => item.user).flat() || [];
 }
 
@@ -166,4 +163,66 @@ export async function insertChallenge(challengeData: Omit<Challenge, 'id'>) {
 export async function signOut() {
   const supabase = createClient();
   const { error } = await supabase.auth.signOut();
+}
+
+export async function fetchAllUserWithSteps(challengeId: number) {
+  const supabase = createClient();
+
+  // Étape 1 : Récupérer tous les utilisateurs liés au défi
+  let { data: users, error: usersError } = await supabase
+    .from('user_challenge')
+    .select('user(*)')
+    .eq('challenge_id', challengeId)
+    .eq('user.is_active', true);
+
+  if (usersError || !users) {
+    console.error(
+      'Erreur lors de la récupération des utilisateurs',
+      usersError
+    );
+    return null;
+  }
+
+  // Simplification : transformer les utilisateurs en un format plus gérable
+  const simplifiedUsers = users.map((uc) => uc.user).flat();
+
+  // Étape 2 : Récupérer les daily_users_steps pour l'ensemble des utilisateurs récupérés
+  // Cette approche suppose que vous avez un grand nombre d'utilisateurs et nécessitez donc d'optimiser les requêtes
+  const userIds = simplifiedUsers.map((user) => user.id);
+
+  // Étape 2.1 : Récupérer les steps en une seule requête (si possible, sinon par lot)
+  let { data: steps, error: stepsError } = await supabase
+    .from('daily_users_steps')
+    .select('*')
+    .in('user_id', userIds); // Utilisez 'in' pour filtrer par un ensemble d'ID
+
+  if (stepsError || !steps) {
+    console.error(
+      'Erreur lors de la récupération des daily users steps',
+      stepsError
+    );
+    return null;
+  }
+
+  // Étape 3 : Associer les steps à chaque utilisateur
+  const usersWithSteps: UserWithSteps[] = simplifiedUsers.map((user) => ({
+    ...user,
+    dailySteps: steps?.filter((step) => step.user_id === user.id) || [], // Assurez-vous que cela ne sera jamais `undefined`
+  }));
+
+  //return usersWithSteps;
+
+  console.log('data', usersWithSteps);
+
+  // const usersWithSteps: UserWithSteps[] = data.map((uc) => {
+  //   // Ici, vous devez vous assurer que chaque objet a bien toutes les propriétés attendues par UserWithSteps
+  //   const userWithStepss: UserWithSteps = {
+  //     ...uc.user, // Cela suppose que uc.user contient déjà toutes les propriétés nécessaires, à part dailySteps
+  //     dailySteps: uc.user.daily_users_steps // Assurez-vous que cette propriété existe et est correctement formatée
+  //   };
+
+  //   return userWithStepss;
+  // });
+
+  return usersWithSteps;
 }

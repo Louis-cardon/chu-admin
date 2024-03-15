@@ -6,8 +6,12 @@ import {
   faUpload,
 } from '@fortawesome/free-solid-svg-icons';
 import './../css/scrollbar-styled.css';
-import { fetchAllUser, updateUserIsActive } from '@/utils/supabase/fetchData';
-import { User } from '@/types/user';
+import {
+  fetchAllUser,
+  fetchAllUserWithSteps,
+  updateUserIsActive,
+} from '@/utils/supabase/fetchData';
+import { User, UserWithSteps } from '@/types/user';
 
 interface StatisticsComponentProps {
   challengeId: number;
@@ -15,6 +19,17 @@ interface StatisticsComponentProps {
 
 const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
   const [users, setUsers] = useState<User[] | null>(null);
+  const [usersWithSteps, setUsersWithSteps] = useState<UserWithSteps[] | null>(
+    null
+  );
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await fetchAllUserWithSteps(challengeId);
+      setUsersWithSteps(data);
+    };
+    fetchData();
+  }, [challengeId]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +50,25 @@ const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
         }
       });
     }
+  };
+
+  const downloadCsv = (usersWithSteps: UserWithSteps[]) => {
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += 'chu_id,Date,Steps\n';
+
+    usersWithSteps.forEach((user) => {
+      user.dailySteps.forEach((step) => {
+        csvContent += `${user.chu_id},${step.date},${step.steps}\n`;
+      });
+    });
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', 'user_steps.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const activeUsers = users?.filter((user) => user !== null) || [];
@@ -60,7 +94,10 @@ const StatisticsComponent = ({ challengeId }: StatisticsComponentProps) => {
           <span>Importer une liste*</span>
           <FontAwesomeIcon icon={faDownload} className="ml-2" />
         </button>
-        <button className="w-auto py-2 text-white bg-primaryBlue rounded-3xl px-2">
+        <button
+          className="w-auto py-2 text-white bg-primaryBlue rounded-3xl px-2"
+          onClick={() => usersWithSteps && downloadCsv(usersWithSteps)}
+        >
           <span>Exporter une liste*</span>
           <FontAwesomeIcon icon={faUpload} className="ml-2" />
         </button>
